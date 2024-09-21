@@ -1,18 +1,31 @@
 import Foundation
+import Network
 
 public protocol NetworkMonitorProtocol {
-    func waitForNetworkAvailable() async
     func isInternetConnectionAvailable() -> Bool
+    func networkAvailabilityStream() -> AsyncStream<Bool>
 }
 
 public class NWNetworkMonitor: NetworkMonitorProtocol {
-    public init() {}
+    private let monitor: NWPathMonitor
+
+    public init() {
+        monitor = NWPathMonitor()
+    }
     
-    public func waitForNetworkAvailable() async {
-        try? await Task.sleep(nanoseconds: 5_000_000_000)
+    public func networkAvailabilityStream() -> AsyncStream<Bool> {
+        AsyncStream<Bool> { continuation in
+            Task {
+                for await path in monitor {
+                    continuation.yield(path.status == .satisfied)
+                }
+                
+                continuation.finish()
+            }
+        }
     }
     
     public func isInternetConnectionAvailable() -> Bool {
-        false
+        monitor.currentPath.status == .satisfied
     }
 }

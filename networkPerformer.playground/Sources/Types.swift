@@ -2,20 +2,24 @@ import Foundation
 
 //public typealias AsyncThrowingTask = () async throws -> Void
 public typealias AsyncOperation = () async -> OperationResult
-public typealias OperationResult = Result<Void, OperationError>
+public typealias OperationResult = Result<OperationType, OperationError>
+
+public enum OperationType {
+    case timeout, networkMonitor, networkTask
+}
 
 public enum OperationError: Error {
-    case internalError, timeout
+    case genericError
 }
 
 public struct AsyncThrowingTask {
-    private let operation: () async throws -> Void
+    private let operation: () async throws -> OperationResult
     
-    init(operation: @escaping () async throws -> Void) {
+    init(operation: @escaping () async throws -> OperationResult) {
         self.operation = operation
     }
     
-    func execute() async throws {
+    func execute() async throws -> OperationResult {
         try await operation()
     }
 }

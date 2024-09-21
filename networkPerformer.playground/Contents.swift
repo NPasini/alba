@@ -6,8 +6,7 @@ PlaygroundPage.current.needsIndefiniteExecution = true
 
 let networkOperationClosure: AsyncOperation = {
     // Long-lasting network operation.
-    print("Test - Running operation 1")
-    return .success(())
+    return .success(.networkTask)
 }
 
 let result = await NetworkOperationPerformer().perform(withinSeconds: 3) {

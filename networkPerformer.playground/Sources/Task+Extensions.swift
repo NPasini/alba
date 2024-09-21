@@ -1,8 +1,8 @@
 import Foundation
 
 public extension Task where Success == Never, Failure == Never {
-    static func race(firstCompleted tasks: [AsyncThrowingTask]) async throws {
-        try await withThrowingTaskGroup(of: Void.self) { group in
+    static func race(firstCompleted tasks: [AsyncThrowingTask]) async throws -> OperationResult {
+        try await withThrowingTaskGroup(of: OperationResult.self) { group -> OperationResult in
             for task in tasks {
                 group.addTask() {
                     try await task.execute()

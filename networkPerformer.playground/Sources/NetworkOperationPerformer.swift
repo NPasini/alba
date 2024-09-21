@@ -3,7 +3,7 @@ import Foundation
 public class NetworkOperationPerformer {
     private let networkMonitor: NetworkMonitorProtocol
     
-    public init(networkMonitor: NetworkMonitorProtocol = NWNetworkMonitor()) {
+    public init(networkMonitor: NetworkMonitorProtocol = NetworkMonitor()) {
         self.networkMonitor = networkMonitor
     }
     
@@ -21,14 +21,19 @@ public class NetworkOperationPerformer {
 private extension NetworkOperationPerformer {
     private func waitNetworkAvailability(withTimeout timeout: TimeInterval, andPerformOperation networkOperation: @escaping AsyncOperation) async -> OperationResult {
         do {
-            try await Task.race(firstCompleted: [
+            let result = try await Task.race(firstCompleted: [
                 timerTask(withTimeout: timeout),
                 monitorForNetworkAvailableTask()
             ])
-            print("Test - Running operation")
-            return await networkOperation()
+            
+            if case let .success(operation) = result, operation == .networkMonitor {
+                print("Test - Running operation")
+                return await networkOperation()
+            } else {
+                return .failure(.genericError)
+            }            
         } catch {
-            return .failure(.internalError)
+            return .failure(.genericError)
         }
     }
     
@@ -36,7 +41,7 @@ private extension NetworkOperationPerformer {
         AsyncThrowingTask {
             try await Task.sleep(nanoseconds: UInt64(timeout) * 1_000_000_000)
             print("Test - Timer rings")
-            throw OperationError.timeout
+            return .success(.timeout)
         }
     }
     
@@ -44,16 +49,15 @@ private extension NetworkOperationPerformer {
         AsyncThrowingTask {
             for await availability in self.networkMonitor.networkAvailabilityStream() {
                 print("Test - Network availability \(availability)")
-                if availability {
-                    print("Test - breaking")
-                    break
-                }
+                if availability { break }
             }
             
             guard !Task.isCancelled else {
                 print("Test - Task has been cancelled")
-                return
+                return .failure(.genericError)
             }
+            
+            return .success(.networkMonitor)
         }
     }
     

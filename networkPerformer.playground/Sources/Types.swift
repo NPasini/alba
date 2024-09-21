@@ -5,7 +5,7 @@ public typealias AsyncOperation = () async -> OperationResult
 public typealias OperationResult = Result<OperationType, OperationError>
 
 public enum OperationType {
-    case timeout, networkMonitor, networkTask
+    case timeout, cancellation, networkMonitor, networkTask
 }
 
 public enum OperationError: Error {

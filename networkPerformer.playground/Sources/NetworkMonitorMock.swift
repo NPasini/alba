@@ -4,7 +4,7 @@ public class NetworkMonitorMock: NetworkMonitorProtocol {
     public init() {}
     
     public func networkAvailabilityStream() -> AsyncStream<Bool> {
-        AsyncStream<Bool> { continuation in
+        AsyncStream { continuation in
             Task {
                 for await value in BoolGenerator() {
                     continuation.yield(value)

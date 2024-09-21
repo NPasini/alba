@@ -8,7 +8,7 @@ public protocol NetworkMonitorProtocol {
 
 public class NWNetworkMonitor: NetworkMonitorProtocol {
     private let monitor: NWPathMonitor
-
+    
     public init() {
         monitor = NWPathMonitor()
     }

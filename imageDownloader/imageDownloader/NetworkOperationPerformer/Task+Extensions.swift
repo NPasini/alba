@@ -1,4 +1,11 @@
-public extension Task where Success == Never, Failure == Never {
+//
+//  Task+Extensions.swift
+//  imageDownloader
+//
+//  Created by nicolo.pasini on 22/09/24.
+//
+
+extension Task where Success == Never, Failure == Never {
     static func race(firstCompleted tasks: [AsyncThrowingTask]) async throws -> OperationResult {
         try await withThrowingTaskGroup(of: OperationResult.self) { group -> OperationResult in
             for task in tasks {
@@ -19,3 +26,4 @@ public extension Task where Success == Never, Failure == Never {
         }
     }
 }
+

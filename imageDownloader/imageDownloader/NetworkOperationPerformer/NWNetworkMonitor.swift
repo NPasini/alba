@@ -1,19 +1,26 @@
+//
+//  NWNetworkMonitor.swift
+//  imageDownloader
+//
+//  Created by nicolo.pasini on 22/09/24.
+//
+
 import Foundation
 import Network
 
-public protocol NetworkMonitorProtocol {
+protocol NetworkMonitorProtocol {
     func isInternetConnectionAvailable() -> Bool
     func networkAvailabilityStream() -> AsyncStream<Bool>
 }
 
-public final class NWNetworkMonitor: NetworkMonitorProtocol {
+final class NWNetworkMonitor: NetworkMonitorProtocol {
     private let monitor: NWPathMonitor
     
-    public init() {
+    init() {
         monitor = NWPathMonitor()
     }
     
-    public func networkAvailabilityStream() -> AsyncStream<Bool> {
+    func networkAvailabilityStream() -> AsyncStream<Bool> {
         AsyncStream<Bool> { continuation in
             Task {
                 for await path in monitor {
@@ -25,7 +32,7 @@ public final class NWNetworkMonitor: NetworkMonitorProtocol {
         }
     }
     
-    public func isInternetConnectionAvailable() -> Bool {
+    func isInternetConnectionAvailable() -> Bool {
         monitor.currentPath.status == .satisfied
     }
 }

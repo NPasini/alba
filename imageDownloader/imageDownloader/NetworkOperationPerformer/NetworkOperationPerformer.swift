@@ -1,11 +1,18 @@
+//
+//  NetworkOperationPerformer.swift
+//  imageDownloader
+//
+//  Created by nicolo.pasini on 22/09/24.
+//
+
 import Foundation
 
-public final class NetworkOperationPerformer {
+final class NetworkOperationPerformer {
     private var networkOperation: AsyncOperation?
     private let networkMonitor: NetworkMonitorProtocol
     private var cancelContinuation: AsyncStream<Bool>.Continuation?
     
-    public init(networkMonitor: NetworkMonitorProtocol = NWNetworkMonitor()) {
+    init(networkMonitor: NetworkMonitorProtocol = NWNetworkMonitor()) {
         self.networkMonitor = networkMonitor
     }
     
@@ -21,7 +28,7 @@ public final class NetworkOperationPerformer {
     ///     - `timeout`: The timeout after which the closure is not executed.
     ///     - `networkOperation`: The closure to execute.
     /// - Returns: An `OperationResult` which contains `failure` in case the the closure is not executed because of the timeout or the closure is executing returning an error, `success` in case the closure is executed successfully.
-    public func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult {
+    func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult {
         self.networkOperation = networkOperation
         
         guard networkMonitor.isInternetConnectionAvailable() else {
@@ -34,7 +41,7 @@ public final class NetworkOperationPerformer {
     /// Cancel the execution of the launched operation.
     /// - If the operation is waiting network connection to be executed the `NetworkOperationPerformer` will stop monitoring for network availability and the given closure will not be invoked;
     /// - If the operation has been started it will continue to execute until it completes;
-    public func cancelTask() {
+    func cancelTask() {
         cancelContinuation?.yield(true)
     }
 }
@@ -52,7 +59,7 @@ private extension NetworkOperationPerformer {
                 return await networkOperation()
             } else {
                 return .failure(.genericError)
-            }            
+            }
         } catch {
             return .failure(.genericError)
         }
@@ -99,3 +106,4 @@ private extension NetworkOperationPerformer {
         }
     }
 }
+

@@ -14,6 +14,10 @@
 		74039C7A2CA006CD002649AB /* imageDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C792CA006CD002649AB /* imageDownloaderTests.swift */; };
 		74039C842CA006CD002649AB /* imageDownloaderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C832CA006CD002649AB /* imageDownloaderUITests.swift */; };
 		74039C862CA006CD002649AB /* imageDownloaderUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C852CA006CD002649AB /* imageDownloaderUITestsLaunchTests.swift */; };
+		74039C942CA00715002649AB /* NetworkOperationPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C932CA00715002649AB /* NetworkOperationPerformer.swift */; };
+		74039C962CA0072F002649AB /* NWNetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C952CA0072F002649AB /* NWNetworkMonitor.swift */; };
+		74039C982CA0074C002649AB /* Task+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C972CA0074C002649AB /* Task+Extensions.swift */; };
+		74039C9A2CA00788002649AB /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C992CA00788002649AB /* Types.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +49,10 @@
 		74039C7F2CA006CD002649AB /* imageDownloaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = imageDownloaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74039C832CA006CD002649AB /* imageDownloaderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageDownloaderUITests.swift; sourceTree = "<group>"; };
 		74039C852CA006CD002649AB /* imageDownloaderUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageDownloaderUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		74039C932CA00715002649AB /* NetworkOperationPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkOperationPerformer.swift; sourceTree = "<group>"; };
+		74039C952CA0072F002649AB /* NWNetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NWNetworkMonitor.swift; sourceTree = "<group>"; };
+		74039C972CA0074C002649AB /* Task+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Extensions.swift"; sourceTree = "<group>"; };
+		74039C992CA00788002649AB /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,10 +103,11 @@
 		74039C662CA006CB002649AB /* imageDownloader */ = {
 			isa = PBXGroup;
 			children = (
-				74039C672CA006CB002649AB /* imageDownloaderApp.swift */,
-				74039C692CA006CB002649AB /* ContentView.swift */,
-				74039C6B2CA006CD002649AB /* Assets.xcassets */,
 				74039C6D2CA006CD002649AB /* imageDownloader.entitlements */,
+				74039C692CA006CB002649AB /* ContentView.swift */,
+				74039C672CA006CB002649AB /* imageDownloaderApp.swift */,
+				74039C6B2CA006CD002649AB /* Assets.xcassets */,
+				74039C922CA006F2002649AB /* NetworkOperationPerformer */,
 				74039C6E2CA006CD002649AB /* Preview Content */,
 			);
 			path = imageDownloader;
@@ -127,6 +136,17 @@
 				74039C852CA006CD002649AB /* imageDownloaderUITestsLaunchTests.swift */,
 			);
 			path = imageDownloaderUITests;
+			sourceTree = "<group>";
+		};
+		74039C922CA006F2002649AB /* NetworkOperationPerformer */ = {
+			isa = PBXGroup;
+			children = (
+				74039C932CA00715002649AB /* NetworkOperationPerformer.swift */,
+				74039C952CA0072F002649AB /* NWNetworkMonitor.swift */,
+				74039C972CA0074C002649AB /* Task+Extensions.swift */,
+				74039C992CA00788002649AB /* Types.swift */,
+			);
+			path = NetworkOperationPerformer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,8 +279,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74039C962CA0072F002649AB /* NWNetworkMonitor.swift in Sources */,
 				74039C6A2CA006CB002649AB /* ContentView.swift in Sources */,
+				74039C982CA0074C002649AB /* Task+Extensions.swift in Sources */,
+				74039C9A2CA00788002649AB /* Types.swift in Sources */,
 				74039C682CA006CB002649AB /* imageDownloaderApp.swift in Sources */,
+				74039C942CA00715002649AB /* NetworkOperationPerformer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

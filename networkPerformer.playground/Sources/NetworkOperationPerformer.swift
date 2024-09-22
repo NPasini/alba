@@ -9,6 +9,18 @@ public final class NetworkOperationPerformer {
         self.networkMonitor = networkMonitor
     }
     
+    /// Attempts to perform a network operation within the given timeout.
+    ///
+    /// Use this method to perform a netowrk operation when the network connection is available.
+    /// - If no network is available, the given closure is not invoked;
+    /// - If the network is initially available, the given closure is invoked;
+    /// - If the network is initially not available but becomes available within the given timeout duration, the given closure is invoked;
+    /// - If the network is initially not available and becomes available only after the given timeout duration, the given closure is not invoked.
+    ///
+    /// - Parameters:
+    ///     - `timeout`: The timeout after which the closure is not executed.
+    ///     - `networkOperation`: The closure to execute.
+    /// - Returns: An `OperationResult` which contains `failure` in case the the closure is not executed because of the timeout or the closure is executing returning an error, `success` in case the closure is executed successfully.
     public func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult {
         self.networkOperation = networkOperation
         
@@ -19,6 +31,9 @@ public final class NetworkOperationPerformer {
         return await networkOperation()
     }
     
+    /// Cancel the execution of the launched operation.
+    /// - If the operation is waiting network connection to be executed the `NetworkOperationPerformer` will stop monitoring for network availability and the given closure will not be invoked;
+    /// - If the operation has been started it will continue to execute until it completes;
     public func cancelTask() {
         cancelContinuation?.yield(true)
     }

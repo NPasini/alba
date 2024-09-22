@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		74039C682CA006CB002649AB /* imageDownloaderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C672CA006CB002649AB /* imageDownloaderApp.swift */; };
-		74039C6A2CA006CB002649AB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C692CA006CB002649AB /* ContentView.swift */; };
+		74039C6A2CA006CB002649AB /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C692CA006CB002649AB /* LoadingView.swift */; };
 		74039C6C2CA006CD002649AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74039C6B2CA006CD002649AB /* Assets.xcassets */; };
 		74039C702CA006CD002649AB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74039C6F2CA006CD002649AB /* Preview Assets.xcassets */; };
 		74039C7A2CA006CD002649AB /* imageDownloaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C792CA006CD002649AB /* imageDownloaderTests.swift */; };
@@ -18,6 +18,8 @@
 		74039C962CA0072F002649AB /* NWNetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C952CA0072F002649AB /* NWNetworkMonitor.swift */; };
 		74039C982CA0074C002649AB /* Task+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C972CA0074C002649AB /* Task+Extensions.swift */; };
 		74039C9A2CA00788002649AB /* Types.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C992CA00788002649AB /* Types.swift */; };
+		74039C9D2CA008CA002649AB /* SpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039C9C2CA008CA002649AB /* SpinnerView.swift */; };
+		74039CA52CA00AD0002649AB /* LoadingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74039CA42CA00AD0002649AB /* LoadingViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +42,7 @@
 /* Begin PBXFileReference section */
 		74039C642CA006CB002649AB /* imageDownloader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = imageDownloader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74039C672CA006CB002649AB /* imageDownloaderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageDownloaderApp.swift; sourceTree = "<group>"; };
-		74039C692CA006CB002649AB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		74039C692CA006CB002649AB /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		74039C6B2CA006CD002649AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		74039C6D2CA006CD002649AB /* imageDownloader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = imageDownloader.entitlements; sourceTree = "<group>"; };
 		74039C6F2CA006CD002649AB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -53,6 +55,8 @@
 		74039C952CA0072F002649AB /* NWNetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NWNetworkMonitor.swift; sourceTree = "<group>"; };
 		74039C972CA0074C002649AB /* Task+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Extensions.swift"; sourceTree = "<group>"; };
 		74039C992CA00788002649AB /* Types.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Types.swift; sourceTree = "<group>"; };
+		74039C9C2CA008CA002649AB /* SpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerView.swift; sourceTree = "<group>"; };
+		74039CA42CA00AD0002649AB /* LoadingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,11 +108,12 @@
 			isa = PBXGroup;
 			children = (
 				74039C6D2CA006CD002649AB /* imageDownloader.entitlements */,
-				74039C692CA006CB002649AB /* ContentView.swift */,
 				74039C672CA006CB002649AB /* imageDownloaderApp.swift */,
 				74039C6B2CA006CD002649AB /* Assets.xcassets */,
 				74039C922CA006F2002649AB /* NetworkOperationPerformer */,
 				74039C6E2CA006CD002649AB /* Preview Content */,
+				74039CA12CA00A8B002649AB /* Screens */,
+				74039C9B2CA008BA002649AB /* UI Components */,
 			);
 			path = imageDownloader;
 			sourceTree = "<group>";
@@ -147,6 +152,31 @@
 				74039C992CA00788002649AB /* Types.swift */,
 			);
 			path = NetworkOperationPerformer;
+			sourceTree = "<group>";
+		};
+		74039C9B2CA008BA002649AB /* UI Components */ = {
+			isa = PBXGroup;
+			children = (
+				74039C9C2CA008CA002649AB /* SpinnerView.swift */,
+			);
+			path = "UI Components";
+			sourceTree = "<group>";
+		};
+		74039CA12CA00A8B002649AB /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				74039CA32CA00AC8002649AB /* Loading */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		74039CA32CA00AC8002649AB /* Loading */ = {
+			isa = PBXGroup;
+			children = (
+				74039C692CA006CB002649AB /* LoadingView.swift */,
+				74039CA42CA00AD0002649AB /* LoadingViewModel.swift */,
+			);
+			path = Loading;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,11 +310,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				74039C962CA0072F002649AB /* NWNetworkMonitor.swift in Sources */,
-				74039C6A2CA006CB002649AB /* ContentView.swift in Sources */,
+				74039C6A2CA006CB002649AB /* LoadingView.swift in Sources */,
 				74039C982CA0074C002649AB /* Task+Extensions.swift in Sources */,
 				74039C9A2CA00788002649AB /* Types.swift in Sources */,
 				74039C682CA006CB002649AB /* imageDownloaderApp.swift in Sources */,
 				74039C942CA00715002649AB /* NetworkOperationPerformer.swift in Sources */,
+				74039C9D2CA008CA002649AB /* SpinnerView.swift in Sources */,
+				74039CA52CA00AD0002649AB /* LoadingViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,20 +8,27 @@
 import SwiftUI
 
 struct LoadingView: View {
-//    private let model: LoadingViewModel
+    @ObservedObject private var model: LoadingViewModel
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .superViewCenterAlignment) {
             Color.loadingBackground
-            SpinnerView(color: .gray)
+            VStack(spacing: 20) {
+                SpinnerView(color: .gray)
+                    .alignmentGuide(.centerToSuperViewCenterAlignment) { $0.height / 2 }
+                Text("Network not available")
+            }
         }
     }
     
-//    init(model: LoadingViewModel) {
-//        self.model = model
-//    }
+    init(model: LoadingViewModel) {
+        self.model = model
+    }
 }
 
 #Preview {
-    LoadingView()
+    LoadingView(model: LoadingViewModel(
+        networkMonitor: NWNetworkMonitor(),
+        networkPerformer: NetworkOperationPerformer())
+    )
 }

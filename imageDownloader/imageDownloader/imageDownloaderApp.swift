@@ -11,7 +11,10 @@ import SwiftUI
 struct imageDownloaderApp: App {
     var body: some Scene {
         WindowGroup {
-            LoadingView()
+            LoadingView(model: LoadingViewModel(
+                networkMonitor: NWNetworkMonitor(),
+                networkPerformer: NetworkOperationPerformer())
+            )
         }
     }
 }

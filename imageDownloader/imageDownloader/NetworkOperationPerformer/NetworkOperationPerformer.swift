@@ -7,6 +7,11 @@
 
 import Foundation
 
+protocol NetworkOperationPerformerProtocol {
+    func cancelTask()
+    func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult
+}
+
 final class NetworkOperationPerformer {
     private var networkOperation: AsyncOperation?
     private let networkMonitor: NetworkMonitorProtocol

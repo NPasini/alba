@@ -1,6 +1,5 @@
 import Foundation
 
-//public typealias AsyncThrowingTask = () async throws -> Void
 public typealias AsyncOperation = () async -> OperationResult
 public typealias OperationResult = Result<OperationType, OperationError>
 

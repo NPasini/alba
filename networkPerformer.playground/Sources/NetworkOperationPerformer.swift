@@ -1,6 +1,6 @@
 import Foundation
 
-public class NetworkOperationPerformer {
+public final class NetworkOperationPerformer {
     private var networkOperation: AsyncOperation?
     private let networkMonitor: NetworkMonitorProtocol
     private var cancelContinuation: AsyncStream<Bool>.Continuation?
@@ -13,16 +13,13 @@ public class NetworkOperationPerformer {
         self.networkOperation = networkOperation
         
         guard networkMonitor.isInternetConnectionAvailable() else {
-            print("Test - Network not available, start monitoring network")
             return await waitNetworkAvailability(withTimeout: timeout, andPerformOperation: networkOperation)
         }
         
-        print("Test - Network available, invoke closure")
         return await networkOperation()
     }
     
     public func cancelTask() {
-        print("Test - Canelling operation manually")
         cancelContinuation?.yield(true)
     }
 }
@@ -37,7 +34,6 @@ private extension NetworkOperationPerformer {
             ])
             
             if case let .success(operation) = result, operation == .networkMonitor {
-                print("Test - Running operation")
                 return await networkOperation()
             } else {
                 return .failure(.genericError)
@@ -50,7 +46,6 @@ private extension NetworkOperationPerformer {
     private func timerTask(withTimeout timeout: TimeInterval) -> AsyncThrowingTask {
         AsyncThrowingTask {
             try await Task.sleep(nanoseconds: UInt64(timeout) * 1_000_000_000)
-            print("Test - Timer rings")
             return .success(.timeout)
         }
     }
@@ -58,12 +53,10 @@ private extension NetworkOperationPerformer {
     private func monitorForNetworkAvailableTask() -> AsyncThrowingTask {
         AsyncThrowingTask {
             for await availability in self.networkMonitor.networkAvailabilityStream() {
-                print("Test - Network availability \(availability)")
                 if availability { break }
             }
             
             guard !Task.isCancelled else {
-                print("Test - Task has been cancelled")
                 return .failure(.genericError)
             }
             
@@ -78,11 +71,9 @@ private extension NetworkOperationPerformer {
             }
             
             guard !Task.isCancelled else {
-                print("Test - Task has been cancelled")
                 return .failure(.genericError)
             }
             
-            print("Test - Cancel operation task triggere")
             return .success(.cancellation)
         }
     }

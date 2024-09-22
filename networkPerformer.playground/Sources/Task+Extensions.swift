@@ -10,7 +10,6 @@ public extension Task where Success == Never, Failure == Never {
             }
             
             defer {
-                print("Test - Cancelling pending task")
                 group.cancelAll()
             }
             

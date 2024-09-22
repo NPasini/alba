@@ -5,7 +5,7 @@ public class NetworkOperationPerformer {
     private let networkMonitor: NetworkMonitorProtocol
     private var cancelContinuation: AsyncStream<Bool>.Continuation?
     
-    public init(networkMonitor: NetworkMonitorProtocol = NWNetworkMonitor()) {
+    public init(networkMonitor: NetworkMonitorProtocol = NetworkMonitorMock.neverAvailable) {
         self.networkMonitor = networkMonitor
     }
     
@@ -22,7 +22,7 @@ public class NetworkOperationPerformer {
     }
     
     public func cancelTask() {
-        print("Test - Canelling operation")
+        print("Test - Canelling operation manually")
         cancelContinuation?.yield(true)
     }
 }
@@ -82,7 +82,7 @@ private extension NetworkOperationPerformer {
                 return .failure(.genericError)
             }
             
-            print("Test - Operation manually cancelled")
+            print("Test - Cancel operation task triggere")
             return .success(.cancellation)
         }
     }

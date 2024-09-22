@@ -9,13 +9,8 @@ let networkOperationClosure: AsyncOperation = {
     return .success(.networkTask)
 }
 
-let performer = NetworkOperationPerformer()
-
-let result = await performer.perform(withinSeconds: 3) {
+let result = await NetworkOperationPerformer().perform(withinSeconds: 3) {
     return await networkOperationClosure()
 }
-
-try! await Task.sleep(nanoseconds: 1_000_000_000)
-//performer.cancelTask()
 
 PlaygroundPage.current.finishExecution()

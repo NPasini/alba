@@ -9,11 +9,16 @@ import SwiftUI
 
 @main
 struct imageDownloaderApp: App {
+    private let router = Router()
+    
     var body: some Scene {
         WindowGroup {
-            LoadingView(model: LoadingViewModel(
-                networkMonitor: NWNetworkMonitor(),
-                networkPerformer: NetworkOperationPerformer())
+            LoadingView(
+                model: LoadingViewModel(
+                    router: router,
+                    networkMonitor: NWNetworkMonitor(),
+                    networkPerformer: NetworkOperationPerformer()
+                ), router: router
             )
         }
     }

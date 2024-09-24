@@ -24,6 +24,7 @@
 		7403A9452CA06CB3002649AB /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7403A9442CA06CB3002649AB /* ImageView.swift */; };
 		7403A9472CA071D5002649AB /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7403A9462CA071D5002649AB /* Router.swift */; };
 		74FC394C2CA3130400C3C207 /* ImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FC394B2CA3130400C3C207 /* ImageViewModel.swift */; };
+		74FC39512CA3344000C3C207 /* ScreensStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FC39502CA3344000C3C207 /* ScreensStackView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		7403A9442CA06CB3002649AB /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		7403A9462CA071D5002649AB /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		74FC394B2CA3130400C3C207 /* ImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewModel.swift; sourceTree = "<group>"; };
+		74FC39502CA3344000C3C207 /* ScreensStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensStackView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 		74039CA12CA00A8B002649AB /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				74FC394F2CA3341F00C3C207 /* ScreensStackView */,
 				7403A9432CA06CA9002649AB /* Image */,
 				74039CA32CA00AC8002649AB /* Loading */,
 			);
@@ -205,6 +208,14 @@
 				74FC394B2CA3130400C3C207 /* ImageViewModel.swift */,
 			);
 			path = Image;
+			sourceTree = "<group>";
+		};
+		74FC394F2CA3341F00C3C207 /* ScreensStackView */ = {
+			isa = PBXGroup;
+			children = (
+				74FC39502CA3344000C3C207 /* ScreensStackView.swift */,
+			);
+			path = ScreensStackView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -337,6 +348,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74FC39512CA3344000C3C207 /* ScreensStackView.swift in Sources */,
 				7403A9472CA071D5002649AB /* Router.swift in Sources */,
 				7403A9452CA06CB3002649AB /* ImageView.swift in Sources */,
 				74039C962CA0072F002649AB /* NWNetworkMonitor.swift in Sources */,

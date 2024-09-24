@@ -13,12 +13,13 @@ struct imageDownloaderApp: App {
     
     var body: some Scene {
         WindowGroup {
-            LoadingView(
+            ScreensStackView(
                 model: LoadingViewModel(
                     router: router,
                     networkMonitor: NWNetworkMonitor(),
                     networkPerformer: NetworkOperationPerformer()
-                ), router: router
+                ), 
+                router: router
             )
         }
     }

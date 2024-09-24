@@ -10,13 +10,18 @@ import SwiftUI
 @Observable
 final class Router {
     enum Destination: Hashable {
-        case imageScreen(imageData: UIImage?)
+        case imageScreen(imageData: Data?)
     }
     
-    var path = NavigationPath()
+    var path = NavigationPath() {
+        didSet {
+            let x = 1
+            print("Test - set new path \(path)")
+        }
+    }
     
     func navigate(to destination: Destination) {
-        print("Path \(path)")
+        print("Test - Navigating to path \(path)")
         path.append(destination)
     }
 }

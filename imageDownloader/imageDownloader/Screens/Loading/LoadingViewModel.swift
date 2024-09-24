@@ -24,6 +24,8 @@ final class LoadingViewModel {
         !isNetworkAvailable && haveFiveSecondsPassed
     }
     
+    let notAvailableNetworkText = "Network not available 😢"
+    
     init(urlSession: URLSession = .shared, router: Router, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformer, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout) {
         self.router = router
         self.urlSession = urlSession
@@ -63,29 +65,29 @@ private extension LoadingViewModel {
     }
     
     func startFetchingImage() {
-        Task { // Runnare in background
-            let result = await networkPerformer.perform(withinSeconds: downloadTimeout) {
+        Task {
+            var downloadedImageData: Data?
+            await networkPerformer.perform(withinSeconds: downloadTimeout) { [weak self] in
+                guard let self else { return .failure(.genericError) }
+                
                 do {
-//                    try! await Task.sleep(nanoseconds: 2_000_000_000)
+                    // Spostare il codice in un oggetto a se stante
                     guard let url = URL(string: LoadingViewModel.imageUrl) else { return .failure(.genericError) }
-                    let (data, response) = try await self.urlSession.data(from: url)
+                    let (data, response) = try await urlSession.data(from: url)
                     guard let response = response as? HTTPURLResponse,
                             (200...299).contains(response.statusCode) else {
                         throw URLError(.badServerResponse)
                     }
-                    return .success(.imageDownload(data: data))
+                    downloadedImageData = data
+                    return .success(.imageDownload)
                 } catch {
-                    print("\(error)")
+                    print("Test - Error: \(error)")
                     return .failure(.genericError)
                 }
             }
             
-            if case let .success(.imageDownload(data)) = result {
-                router.navigate(to: .imageScreen(imageData: UIImage(data: data)))
-                return
-            }
-            
-            router.navigate(to: .imageScreen(imageData: nil))
+            print("Test - Displaying triggering new screen")
+            router.navigate(to: .imageScreen(imageData: downloadedImageData))
         }
     }
 }

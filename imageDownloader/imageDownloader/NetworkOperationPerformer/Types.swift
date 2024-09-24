@@ -10,8 +10,8 @@ import Foundation
 typealias AsyncOperation = () async -> OperationResult
 typealias OperationResult = Result<OperationType, OperationError>
 
-enum OperationType: Equatable {
-    case timeout, cancellation, networkMonitor, networkTask, imageDownload(data: Data)
+enum OperationType {
+    case timeout, cancellation, networkMonitor, networkTask, imageDownload
 }
 
 enum OperationError: Error {

@@ -9,46 +9,35 @@ import SwiftUI
 
 struct LoadingView: View {
     private let model: LoadingViewModel
-    @Bindable private var router: Router
     
     var body: some View {
-        NavigationStack(path: $router.path) {
-            ZStack(alignment: .superViewCenterAlignment) {
-                Color.loadingBackground
-                VStack(spacing: 50) {
-                    SpinnerView(color: .gray)
-                        .alignmentGuide(.centerToSuperViewCenterAlignment) { $0.height / 2 }
-                    if model.shouldDisplayNetworkNotAvailable {
-                        Text("Network not available")
-                    }
-                }
-            }
-            .onAppear {
-                print("OnAppear")
-                model.onAppear()
-            }
-            .navigationDestination(for: Router.Destination.self) { destination in
-                print("Destination \(destination)")
-                switch destination {
-                case let .imageScreen(image): return ImageView(image: image)
+        ZStack(alignment: .superViewCenterAlignment) {
+            Color.loadingBackground
+            VStack(spacing: 50) {
+                SpinnerView(color: .gray)
+                    .alignmentGuide(.centerToSuperViewCenterAlignment) { $0.height / 2 }
+                if model.shouldDisplayNetworkNotAvailable {
+                    Text(model.notAvailableNetworkText)
                 }
             }
         }
+        .onAppear {
+            print("Test - OnAppear")
+            model.onAppear()
+        }
     }
     
-    init(model: LoadingViewModel, router: Router) {
+    init(model: LoadingViewModel) {
         self.model = model
-        self.router = router
     }
 }
 
 #Preview("LoadingView") {
-    let router = Router()
-    return LoadingView(
+    LoadingView(
         model: LoadingViewModel(
-            router: router,
+            router: Router(),
             networkMonitor: NWNetworkMonitor(),
             networkPerformer: NetworkOperationPerformer()
-        ), router: router
+        )
     )
 }

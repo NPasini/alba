@@ -13,8 +13,8 @@ final class LoadingViewModel {
     private var isNetworkAvailable: Bool
     private var haveFiveSecondsPassed: Bool = false
     
-    private let urlSession: URLSession
     private let downloadTimeout: TimeInterval
+    private let httpClient: HTTPClientProtocol
     private let onDownloadCompleted: (Data?) -> Void
     private let networkAvailableTimeout: TimeInterval
     private let networkMonitor: NetworkMonitorProtocol
@@ -26,8 +26,8 @@ final class LoadingViewModel {
     
     let notAvailableNetworkText = "Network not available 😢"
     
-    init(urlSession: URLSession = .shared, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformer, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout, onDownloadCompleted: @escaping (Data?) -> Void) {
-        self.urlSession = urlSession
+    init(httpClient: HTTPClientProtocol, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformer, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout, onDownloadCompleted: @escaping (Data?) -> Void) {
+        self.httpClient = httpClient
         self.networkMonitor = networkMonitor
         self.downloadTimeout = downloadTimeout
         self.networkPerformer = networkPerformer
@@ -49,7 +49,6 @@ final class LoadingViewModel {
 private extension LoadingViewModel {
     static let networkLabelTreshold: TimeInterval = 0.5
     static let networkOperationTimeout: TimeInterval = 2
-    static let imageUrl: String = "https://lorempokemon.fakerapi.it/pokemon/300/89"
     
     func startNetworkTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: networkAvailableTimeout, repeats: false) { [self] _ in
@@ -71,14 +70,8 @@ private extension LoadingViewModel {
                 guard let self else { return .failure(.genericError) }
                 
                 do {
-                    // Spostare il codice in un oggetto a se stante
-                    guard let url = URL(string: LoadingViewModel.imageUrl) else { return .failure(.genericError) }
-                    let (data, response) = try await urlSession.data(from: url)
-                    guard let response = response as? HTTPURLResponse,
-                            (200...299).contains(response.statusCode) else {
-                        throw URLError(.badServerResponse)
-                    }
-                    downloadedImageData = data
+                    guard let url = ImageEndpoint.getImage.url() else { return .failure(.genericError) }
+                    downloadedImageData = try await httpClient.getData(from: url)
                     return .success(.imageDownload)
                 } catch {
                     print("Test - Error: \(error)")

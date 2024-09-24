@@ -35,9 +35,11 @@ struct LoadingView: View {
 #Preview("LoadingView") {
     LoadingView(
         model: LoadingViewModel(
-            router: Router(),
             networkMonitor: NWNetworkMonitor(),
-            networkPerformer: NetworkOperationPerformer()
+            networkPerformer: NetworkOperationPerformer(), 
+            onDownloadCompleted: { _ in
+                print("Download completed")
+            }
         )
     )
 }

@@ -13,9 +13,9 @@ final class LoadingViewModel {
     private var isNetworkAvailable: Bool
     private var haveFiveSecondsPassed: Bool = false
     
-    private let router: Router
     private let urlSession: URLSession
     private let downloadTimeout: TimeInterval
+    private let onDownloadCompleted: (Data?) -> Void
     private let networkAvailableTimeout: TimeInterval
     private let networkMonitor: NetworkMonitorProtocol
     private let networkPerformer: NetworkOperationPerformer
@@ -26,12 +26,12 @@ final class LoadingViewModel {
     
     let notAvailableNetworkText = "Network not available 😢"
     
-    init(urlSession: URLSession = .shared, router: Router, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformer, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout) {
-        self.router = router
+    init(urlSession: URLSession = .shared, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformer, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout, onDownloadCompleted: @escaping (Data?) -> Void) {
         self.urlSession = urlSession
         self.networkMonitor = networkMonitor
         self.downloadTimeout = downloadTimeout
         self.networkPerformer = networkPerformer
+        self.onDownloadCompleted = onDownloadCompleted
         self.networkAvailableTimeout = networkAvailableTimeout
         isNetworkAvailable = networkMonitor.isInternetConnectionAvailable()
     }
@@ -87,7 +87,7 @@ private extension LoadingViewModel {
             }
             
             print("Test - Displaying triggering new screen")
-            router.navigate(to: .imageScreen(imageData: downloadedImageData))
+            onDownloadCompleted(downloadedImageData)
         }
     }
 }

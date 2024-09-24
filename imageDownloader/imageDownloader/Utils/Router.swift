@@ -13,12 +13,7 @@ final class Router {
         case imageScreen(imageData: Data?)
     }
     
-    var path = NavigationPath() {
-        didSet {
-            let x = 1
-            print("Test - set new path \(path)")
-        }
-    }
+    var path = [Router.Destination]()
     
     func navigate(to destination: Destination) {
         print("Test - Navigating to path \(path)")

@@ -15,10 +15,12 @@ struct imageDownloaderApp: App {
         WindowGroup {
             ScreensStackView(
                 model: LoadingViewModel(
-                    router: router,
                     networkMonitor: NWNetworkMonitor(),
-                    networkPerformer: NetworkOperationPerformer()
-                ), 
+                    networkPerformer: NetworkOperationPerformer(), 
+                    onDownloadCompleted: { data in
+                        router.navigate(to: .imageScreen(imageData: data))
+                    }
+                ),
                 router: router
             )
         }

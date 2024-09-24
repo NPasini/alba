@@ -19,6 +19,7 @@ struct ScreensStackView: View {
                 print("Test - Displaying \(destination)")
                 switch destination {
                 case let .imageScreen(imageData):
+                    print("Test - Displaying image Screen")
                     return ImageView(model: ImageViewModel(imageData: imageData))
                 }
             }

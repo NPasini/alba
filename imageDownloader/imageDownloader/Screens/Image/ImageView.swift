@@ -8,24 +8,26 @@
 import SwiftUI
 
 struct ImageView: View {
-    private let image: UIImage?
+    private let model: ImageViewModel
     
     var body: some View {
-        if let image {
+        if let data = model.imageData, let image = UIImage(data: data) {
             Image(uiImage: image)
         } else {
-            Text("The pokemon did not show 😞")
+            Text(model.failureText)
         }
     }
     
-    init(image: UIImage?) {
-        self.image = image
+    init(model: ImageViewModel) {
+        self.model = model
     }
 }
 
 #Preview("ImageView") {
     Group {
-        ImageView(image: UIImage(named: "bellsprout"))
-        ImageView(image: nil)
+        let imgage = UIImage(named: "bellsprout")!
+        let data = imgage.jpegData(compressionQuality: 1)
+        ImageView(model: ImageViewModel(imageData: data))
+        ImageView(model: ImageViewModel(imageData: nil))
     }
 }

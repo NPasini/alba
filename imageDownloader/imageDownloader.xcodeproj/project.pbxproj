@@ -128,7 +128,6 @@
 				74039C6D2CA006CD002649AB /* imageDownloader.entitlements */,
 				74039C672CA006CB002649AB /* imageDownloaderApp.swift */,
 				74039C6B2CA006CD002649AB /* Assets.xcassets */,
-				74039C922CA006F2002649AB /* NetworkOperationPerformer */,
 				74039C6E2CA006CD002649AB /* Preview Content */,
 				74039CA12CA00A8B002649AB /* Screens */,
 				74039C9B2CA008BA002649AB /* UI Components */,
@@ -208,6 +207,7 @@
 				74FC39522CA35A6400C3C207 /* HTTPClient.swift */,
 				7403A9462CA071D5002649AB /* Router.swift */,
 				74FC39562CA3663900C3C207 /* Mocks */,
+				74039C922CA006F2002649AB /* NetworkOperationPerformer */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -544,6 +544,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"imageDownloader/Preview Content\"";
+				DEVELOPMENT_TEAM = 78PXN885KU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -580,6 +581,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"imageDownloader/Preview Content\"";
+				DEVELOPMENT_TEAM = 78PXN885KU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;

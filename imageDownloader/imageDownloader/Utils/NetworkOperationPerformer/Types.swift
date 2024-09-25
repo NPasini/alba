@@ -11,7 +11,7 @@ typealias AsyncOperation = () async -> OperationResult
 typealias OperationResult = Result<OperationType, OperationError>
 
 enum OperationType {
-    case timeout, cancellation, networkMonitor, networkTask, imageDownload(data: Data)
+    case timeout, cancellation, networkMonitor, networkTask, imageDownload
 }
 
 enum OperationError: Error {

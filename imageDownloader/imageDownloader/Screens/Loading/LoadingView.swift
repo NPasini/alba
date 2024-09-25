@@ -21,7 +21,7 @@ struct LoadingView: View {
                 }
             }
         }
-        .task{ model.onAppear() }
+        .task { await model.onAppear() }
     }
     
     init(model: LoadingViewModel) {

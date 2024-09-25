@@ -15,12 +15,13 @@ struct ScreensStackView: View {
     var body: some View {
         NavigationStack(path: $router.path) {
             LoadingView(model: model)
+                .navigationTitle(Text.loadingScreenTitle)
             .navigationDestination(for: Router.Destination.self) { destination in
-                print("Test - Displaying \(destination)")
                 switch destination {
                 case let .imageScreen(imageData):
-                    print("Test - Displaying image Screen")
-                    return ImageView(model: ImageViewModel(imageData: imageData))
+                    ImageView(model: ImageViewModel(imageData: imageData))
+                        .navigationBarBackButtonHidden(true)
+                        .navigationTitle(Text.imageScreenTitle)
                 }
             }
         }
@@ -29,5 +30,12 @@ struct ScreensStackView: View {
     init(model: LoadingViewModel, router: Router) {
         self.model = model
         self.router = router
+    }
+}
+
+private extension ScreensStackView {
+    enum Text {
+        static let loadingScreenTitle = "Loading data"
+        static let imageScreenTitle = "Random Pokemon"
     }
 }

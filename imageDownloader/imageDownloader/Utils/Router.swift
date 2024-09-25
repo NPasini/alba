@@ -16,7 +16,6 @@ final class Router {
     var path = [Router.Destination]()
     
     func navigate(to destination: Destination) {
-        print("Test - Navigating to path \(path)")
         path.append(destination)
     }
 }

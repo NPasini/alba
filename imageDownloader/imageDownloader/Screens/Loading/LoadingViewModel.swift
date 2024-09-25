@@ -36,13 +36,10 @@ final class LoadingViewModel {
         isNetworkAvailable = networkMonitor.isInternetConnectionAvailable()
     }
     
-    func onAppear() {
+    func onAppear() async {
         startNetworkTimer()
         startFetchingImage()
-        
-        Task {
-            await monitoringForNetworkAvailability() // Stoppare quando la view viene nascosta
-        }
+        await monitoringForNetworkAvailability()
     }
 }
 

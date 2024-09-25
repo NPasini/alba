@@ -13,6 +13,9 @@ struct ImageView: View {
     var body: some View {
         if let data = model.imageData, let image = UIImage(data: data) {
             Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding(10)
         } else {
             Text(model.failureText)
         }

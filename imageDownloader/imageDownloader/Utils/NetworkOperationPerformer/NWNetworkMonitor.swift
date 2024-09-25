@@ -22,12 +22,17 @@ final class NWNetworkMonitor: NetworkMonitorProtocol {
     
     func networkAvailabilityStream() -> AsyncStream<Bool> {
         AsyncStream<Bool> { continuation in
-            Task {
+            let task = Task {
                 for await path in monitor {
                     continuation.yield(path.status == .satisfied)
+                    if path.status == .satisfied {
+                        continuation.finish()
+                    }
                 }
-                
-                continuation.finish()
+            }
+            
+            continuation.onTermination = { _ in
+                task.cancel()
             }
         }
     }

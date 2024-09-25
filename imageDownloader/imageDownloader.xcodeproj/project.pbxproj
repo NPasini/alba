@@ -23,6 +23,7 @@
 		7403A9422CA02745002649AB /* CustomAlignments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7403A9412CA02745002649AB /* CustomAlignments.swift */; };
 		7403A9452CA06CB3002649AB /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7403A9442CA06CB3002649AB /* ImageView.swift */; };
 		7403A9472CA071D5002649AB /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7403A9462CA071D5002649AB /* Router.swift */; };
+		74EB45EF2CA41B78006C369F /* NetworkMonitorMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EB45EE2CA41B78006C369F /* NetworkMonitorMock.swift */; };
 		74FC394C2CA3130400C3C207 /* ImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FC394B2CA3130400C3C207 /* ImageViewModel.swift */; };
 		74FC39512CA3344000C3C207 /* ScreensStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FC39502CA3344000C3C207 /* ScreensStackView.swift */; };
 		74FC39532CA35A6400C3C207 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74FC39522CA35A6400C3C207 /* HTTPClient.swift */; };
@@ -68,6 +69,7 @@
 		7403A9412CA02745002649AB /* CustomAlignments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlignments.swift; sourceTree = "<group>"; };
 		7403A9442CA06CB3002649AB /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		7403A9462CA071D5002649AB /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		74EB45EE2CA41B78006C369F /* NetworkMonitorMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitorMock.swift; sourceTree = "<group>"; };
 		74FC394B2CA3130400C3C207 /* ImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewModel.swift; sourceTree = "<group>"; };
 		74FC39502CA3344000C3C207 /* ScreensStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreensStackView.swift; sourceTree = "<group>"; };
 		74FC39522CA35A6400C3C207 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				74FC39572CA3668700C3C207 /* HTTPClientMock.swift */,
+				74EB45EE2CA41B78006C369F /* NetworkMonitorMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -376,6 +379,7 @@
 				74FC39582CA3668700C3C207 /* HTTPClientMock.swift in Sources */,
 				74FC394C2CA3130400C3C207 /* ImageViewModel.swift in Sources */,
 				74039C682CA006CB002649AB /* imageDownloaderApp.swift in Sources */,
+				74EB45EF2CA41B78006C369F /* NetworkMonitorMock.swift in Sources */,
 				7403A9422CA02745002649AB /* CustomAlignments.swift in Sources */,
 				74FC39532CA35A6400C3C207 /* HTTPClient.swift in Sources */,
 				74039C942CA00715002649AB /* NetworkOperationPerformer.swift in Sources */,

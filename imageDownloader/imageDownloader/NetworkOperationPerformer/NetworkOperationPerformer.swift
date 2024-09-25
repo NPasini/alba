@@ -33,7 +33,6 @@ final class NetworkOperationPerformer {
     ///     - `timeout`: The timeout after which the closure is not executed.
     ///     - `networkOperation`: The closure to execute.
     /// - Returns: An `OperationResult` which contains `failure` in case the the closure is not executed because of the timeout or the closure is executing returning an error, `success` in case the closure is executed successfully.
-    @discardableResult
     func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult {
         self.networkOperation = networkOperation
         
@@ -61,7 +60,7 @@ private extension NetworkOperationPerformer {
                 cancelOperationTask()
             ])
             
-            if case let .success(operation) = result, operation == .networkMonitor {
+            if case .success(.networkMonitor) = result {
                 return await networkOperation()
             } else {
                 return .failure(.genericError)

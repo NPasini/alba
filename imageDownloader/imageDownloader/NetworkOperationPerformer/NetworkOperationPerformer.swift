@@ -17,7 +17,7 @@ final class NetworkOperationPerformer {
     private let networkMonitor: NetworkMonitorProtocol
     private var cancelContinuation: AsyncStream<Bool>.Continuation?
     
-    init(networkMonitor: NetworkMonitorProtocol = NWNetworkMonitor()) {
+    init(networkMonitor: NetworkMonitorProtocol) {
         self.networkMonitor = networkMonitor
     }
     

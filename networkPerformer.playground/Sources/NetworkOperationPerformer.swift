@@ -40,7 +40,7 @@ public final class NetworkOperationPerformer {
 }
 
 private extension NetworkOperationPerformer {
-    private func waitNetworkAvailability(withTimeout timeout: TimeInterval, andPerformOperation networkOperation: @escaping AsyncOperation) async -> OperationResult {
+    func waitNetworkAvailability(withTimeout timeout: TimeInterval, andPerformOperation networkOperation: @escaping AsyncOperation) async -> OperationResult {
         do {
             let result = try await Task.race(firstCompleted: [
                 timerTask(withTimeout: timeout),
@@ -48,24 +48,24 @@ private extension NetworkOperationPerformer {
                 cancelOperationTask()
             ])
             
-            if case let .success(operation) = result, operation == .networkMonitor {
+            if case .success(.networkMonitor) = result {
                 return await networkOperation()
             } else {
                 return .failure(.genericError)
-            }            
+            }
         } catch {
             return .failure(.genericError)
         }
     }
     
-    private func timerTask(withTimeout timeout: TimeInterval) -> AsyncThrowingTask {
+    func timerTask(withTimeout timeout: TimeInterval) -> AsyncThrowingTask {
         AsyncThrowingTask {
             try await Task.sleep(nanoseconds: UInt64(timeout) * 1_000_000_000)
             return .success(.timeout)
         }
     }
     
-    private func monitorForNetworkAvailableTask() -> AsyncThrowingTask {
+    func monitorForNetworkAvailableTask() -> AsyncThrowingTask {
         AsyncThrowingTask {
             for await availability in self.networkMonitor.networkAvailabilityStream() {
                 if availability { break }
@@ -79,7 +79,7 @@ private extension NetworkOperationPerformer {
         }
     }
     
-    private func cancelOperationTask() -> AsyncThrowingTask {
+    func cancelOperationTask() -> AsyncThrowingTask {
         AsyncThrowingTask {
             for await isCancelled in self.listenForCancelEvent() {
                 if isCancelled { break }
@@ -93,7 +93,7 @@ private extension NetworkOperationPerformer {
         }
     }
     
-    private func listenForCancelEvent() -> AsyncStream<Bool> {
+    func listenForCancelEvent() -> AsyncStream<Bool> {
         AsyncStream { continuation in
             self.cancelContinuation = continuation
         }

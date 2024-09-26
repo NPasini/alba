@@ -17,7 +17,7 @@ final class LoadingViewModel {
     private let onDownloadCompleted: (Data?) -> Void
     private let networkAvailableTimeout: TimeInterval
     private let networkMonitor: NetworkMonitorProtocol
-    private let networkPerformer: NetworkOperationPerformer
+    private let networkPerformer: NetworkOperationPerformerProtocol
     
     var shouldDisplayNetworkNotAvailable: Bool {
         !isNetworkAvailable && hasNetworkLabelThresoldTimePassed
@@ -25,7 +25,7 @@ final class LoadingViewModel {
     
     let notAvailableNetworkText = "Network not available 😢"
     
-    init(httpClient: HTTPClientProtocol, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformer, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout, onDownloadCompleted: @escaping (Data?) -> Void) {
+    init(httpClient: HTTPClientProtocol, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformerProtocol, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout, onDownloadCompleted: @escaping (Data?) -> Void) {
         self.httpClient = httpClient
         self.networkMonitor = networkMonitor
         self.downloadTimeout = downloadTimeout
@@ -54,7 +54,7 @@ private extension LoadingViewModel {
     }
     
     func monitoringForNetworkAvailability() async {
-        for await availability in self.networkMonitor.networkAvailabilityStream() {
+        for await availability in networkMonitor.networkAvailabilityStream() {
             isNetworkAvailable = availability
         }
     }

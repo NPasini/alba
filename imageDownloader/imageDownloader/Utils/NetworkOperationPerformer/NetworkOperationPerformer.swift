@@ -9,10 +9,10 @@ import Foundation
 
 protocol NetworkOperationPerformerProtocol {
     func cancelTask()
-    func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult
+    @discardableResult func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult
 }
 
-final class NetworkOperationPerformer {
+final class NetworkOperationPerformer: NetworkOperationPerformerProtocol {
     private var networkOperation: AsyncOperation?
     private let networkMonitor: NetworkMonitorProtocol
     private var cancelContinuation: AsyncStream<Bool>.Continuation?

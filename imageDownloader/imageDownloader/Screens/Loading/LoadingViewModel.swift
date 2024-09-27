@@ -37,9 +37,13 @@ final class LoadingViewModel {
     
     func onAppear() async {
         await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.fetchImage() }
             group.addTask { await self.monitoringForNetworkAvailability() }
             group.addTask { await self.startNetworkThresholdTimer() }
-            group.addTask { await self.fetchImage() }
+            
+            for await _ in group.prefix(1) {
+                group.cancelAll()
+            }
         }
     }
 }

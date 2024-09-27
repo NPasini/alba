@@ -9,10 +9,15 @@ public enum NetworkMonitorMock {
 public class BaseNetworkMonitorMock: NetworkMonitorProtocol {
     private let networkInitiallyAvailable: Bool
     private let networkNotAvailableStreamLimit: Int
+    private var continuation: AsyncStream<Bool>.Continuation?
     
-    public init(networkInitiallyAvailable: Bool, networkNotAvailableStreamLimit: Int = 0) {
+    init(networkInitiallyAvailable: Bool, networkNotAvailableStreamLimit: Int = 0) {
         self.networkInitiallyAvailable = networkInitiallyAvailable
         self.networkNotAvailableStreamLimit = networkNotAvailableStreamLimit
+    }
+    
+    deinit {
+        continuation?.finish()
     }
     
     public func isInternetConnectionAvailable() -> Bool {
@@ -21,16 +26,23 @@ public class BaseNetworkMonitorMock: NetworkMonitorProtocol {
     
     public func networkAvailabilityStream() -> AsyncStream<Bool> {
         AsyncStream { continuation in
-            Task {
+            let task = Task {
                 for await value in BoolGenerator(limit: networkNotAvailableStreamLimit) {
                     continuation.yield(value)
                 }
                 
                 continuation.finish()
             }
+                
+            continuation.onTermination = { [task] _ in
+                task.cancel()
+            }
+            
+            self.continuation = continuation
         }
     }
 }
+
 
 fileprivate final class AvailableNetworkMonitorMock: BaseNetworkMonitorMock {
     init() {

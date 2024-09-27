@@ -36,13 +36,19 @@ final class LoadingViewModel {
     }
     
     func onAppear() async {
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { await self.fetchImage() }
+        await withTaskGroup(of: OperationResult.self) { group in
             group.addTask { await self.monitoringForNetworkAvailability() }
             group.addTask { await self.startNetworkThresholdTimer() }
+            group.addTask { await self.fetchImage() }
             
-            for await _ in group.prefix(1) {
+            defer {
                 group.cancelAll()
+            }
+            
+            while let taskResult = await group.next() {
+                if case let .success(.imageDownload(imageData)) = taskResult {
+                    handleDownloadResult(imageData)
+                }
             }
         }
     }
@@ -52,31 +58,35 @@ private extension LoadingViewModel {
     static let networkLabelTreshold: TimeInterval = 0.5
     static let networkOperationTimeout: TimeInterval = 2
     
-    func startNetworkThresholdTimer() async {
+    func startNetworkThresholdTimer() async -> OperationResult {
         try? await Task.sleep(nanoseconds: UInt64(networkAvailableTimeout) * 1_000_000_000)
         hasNetworkLabelThresoldTimePassed = true
+        return .success(.timeout)
     }
     
-    func monitoringForNetworkAvailability() async {
+    func monitoringForNetworkAvailability() async -> OperationResult {
         for await availability in networkMonitor.networkAvailabilityStream() {
             isNetworkAvailable = availability
         }
+        
+        return .success(.networkMonitor)
     }
     
-    func fetchImage() async {
-        var downloadedImageData: Data?
-        await networkPerformer.perform(withinSeconds: downloadTimeout) { [weak self] in
+    func fetchImage() async -> OperationResult {
+        return await networkPerformer.perform(withinSeconds: downloadTimeout) { [weak self] in
             guard let self else { return .failure(.genericError) }
             
             do {
                 guard let url = ImageEndpoint.getImage.url() else { return .failure(.genericError) }
-                downloadedImageData = try await httpClient.getData(from: url)
-                return .success(.imageDownload)
+                let downloadedImageData = try await httpClient.getData(from: url)
+                return .success(.imageDownload(imageData: ImageData(data: downloadedImageData)))
             } catch {
-                return .failure(.genericError)
+                return .success(.imageDownload(imageData: ImageData(data: nil)))
             }
         }
-        
-        onDownloadCompleted(downloadedImageData)
+    }
+    
+    func handleDownloadResult(_ imageData: ImageData) {
+        onDownloadCompleted(imageData.data)
     }
 }

@@ -7,26 +7,26 @@
 
 import Foundation
 
-public enum NetworkMonitorMock {
+enum NetworkMonitorMock {
     public static let available: BaseNetworkMonitorMock = AvailableNetworkMonitorMock()
     public static let neverAvailable: BaseNetworkMonitorMock = NeverAvailableNetworkMonitorMock()
     public static let initiallyNotAvailable: BaseNetworkMonitorMock = InitiallyNotAvailableNetworkMonitorMock()
 }
 
-public class BaseNetworkMonitorMock: NetworkMonitorProtocol {
+class BaseNetworkMonitorMock: NetworkMonitorProtocol {
     private let networkInitiallyAvailable: Bool
     private let networkNotAvailableStreamLimit: Int
     
-    public init(networkInitiallyAvailable: Bool, networkNotAvailableStreamLimit: Int = 0) {
+    init(networkInitiallyAvailable: Bool, networkNotAvailableStreamLimit: Int = 0) {
         self.networkInitiallyAvailable = networkInitiallyAvailable
         self.networkNotAvailableStreamLimit = networkNotAvailableStreamLimit
     }
     
-    public func isInternetConnectionAvailable() -> Bool {
+    func isInternetConnectionAvailable() -> Bool {
         networkInitiallyAvailable
     }
     
-    public func networkAvailabilityStream() -> AsyncStream<Bool> {
+    func networkAvailabilityStream() -> AsyncStream<Bool> {
         AsyncStream { continuation in
             Task {
                 for await value in BoolGenerator(limit: networkNotAvailableStreamLimit) {

@@ -26,4 +26,3 @@ extension Task where Success == Never, Failure == Never {
         }
     }
 }
-

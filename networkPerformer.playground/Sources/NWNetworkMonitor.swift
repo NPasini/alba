@@ -8,20 +8,29 @@ public protocol NetworkMonitorProtocol {
 
 public final class NWNetworkMonitor: NetworkMonitorProtocol {
     private let monitor: NWPathMonitor
+    private var continuation: AsyncStream<Bool>.Continuation?
     
     public init() {
         monitor = NWPathMonitor()
     }
     
+    deinit {
+        continuation?.finish()
+    }
+    
     public func networkAvailabilityStream() -> AsyncStream<Bool> {
         AsyncStream<Bool> { continuation in
-            Task {
+            let task = Task {
                 for await path in monitor {
                     continuation.yield(path.status == .satisfied)
                 }
-                
-                continuation.finish()
             }
+            
+            continuation.onTermination = { [task] _ in
+                task.cancel()
+            }
+            
+            self.continuation = continuation
         }
     }
     

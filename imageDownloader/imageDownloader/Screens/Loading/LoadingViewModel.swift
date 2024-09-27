@@ -46,9 +46,7 @@ final class LoadingViewModel {
             }
             
             while let taskResult = await group.next() {
-                if case let .success(.imageDownload(imageData)) = taskResult {
-                    handleDownloadResult(imageData)
-                }
+                if isResultHandled(taskResult) { return }
             }
         }
     }
@@ -79,14 +77,22 @@ private extension LoadingViewModel {
             do {
                 guard let url = ImageEndpoint.getImage.url() else { return .failure(.genericError) }
                 let downloadedImageData = try await httpClient.getData(from: url)
-                return .success(.imageDownload(imageData: ImageData(data: downloadedImageData)))
+                return .success(.imageDownload(imageData: downloadedImageData))
             } catch {
-                return .success(.imageDownload(imageData: ImageData(data: nil)))
+                return .failure(.networkOperationNotPerformed)
             }
         }
     }
     
-    func handleDownloadResult(_ imageData: ImageData) {
-        onDownloadCompleted(imageData.data)
+    func isResultHandled(_ result: OperationResult) -> Bool {
+        if case let .success(.imageDownload(imageData)) = result {
+            onDownloadCompleted(imageData)
+            return true
+        } else if case .failure(.networkOperationNotPerformed) = result {
+            onDownloadCompleted(nil)
+            return true
+        }
+
+        return false
     }
 }

@@ -63,7 +63,7 @@ private extension NetworkOperationPerformer {
             if case .success(.networkMonitor) = result {
                 return await networkOperation()
             } else {
-                return .failure(.genericError)
+                return .failure(.networkOperationNotPerformed)
             }
         } catch {
             return .failure(.genericError)

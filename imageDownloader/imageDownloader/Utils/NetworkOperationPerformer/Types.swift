@@ -10,16 +10,12 @@ import Foundation
 typealias AsyncOperation = () async -> OperationResult
 typealias OperationResult = Result<OperationType, OperationError>
 
-struct ImageData {
-    let data: Data?
-}
-
 enum OperationType {
-    case timeout, cancellation, networkMonitor, networkTask, imageDownload(imageData: ImageData)
+    case timeout, cancellation, networkMonitor, networkTask, imageDownload(imageData: Data)
 }
 
 enum OperationError: Error {
-    case genericError
+    case genericError, networkOperationNotPerformed
 }
 
 struct AsyncThrowingTask {

@@ -37,8 +37,6 @@ class BaseNetworkMonitorMock: NetworkMonitorProtocol {
                 for await value in BoolGenerator(limit: networkNotAvailableStreamLimit) {
                     continuation.yield(value)
                 }
-                
-                continuation.finish()
             }
                 
             continuation.onTermination = { [task] _ in
@@ -50,19 +48,19 @@ class BaseNetworkMonitorMock: NetworkMonitorProtocol {
     }
 }
 
-fileprivate final class AvailableNetworkMonitorMock: BaseNetworkMonitorMock {
+final class AvailableNetworkMonitorMock: BaseNetworkMonitorMock {
     init() {
         super.init(networkInitiallyAvailable: true)
     }
 }
 
-fileprivate class NeverAvailableNetworkMonitorMock: BaseNetworkMonitorMock {
+class NeverAvailableNetworkMonitorMock: BaseNetworkMonitorMock {
     init() {
         super.init(networkInitiallyAvailable: false, networkNotAvailableStreamLimit: 50)
     }
 }
 
-fileprivate class InitiallyNotAvailableNetworkMonitorMock: BaseNetworkMonitorMock {
+class InitiallyNotAvailableNetworkMonitorMock: BaseNetworkMonitorMock {
     init() {
         super.init(networkInitiallyAvailable: false, networkNotAvailableStreamLimit: 3)
     }

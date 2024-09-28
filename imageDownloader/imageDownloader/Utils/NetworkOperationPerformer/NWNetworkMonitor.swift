@@ -15,14 +15,14 @@ protocol NetworkMonitorProtocol {
 
 final class NWNetworkMonitor: NetworkMonitorProtocol {
     private let monitor: NWPathMonitor
-    private var continuation: AsyncStream<Bool>.Continuation?
+    private var continuations = [AsyncStream<Bool>.Continuation]()
     
     init() {
         monitor = NWPathMonitor()
     }
     
     deinit {
-        continuation?.finish()
+        continuations.forEach { $0.finish() }
     }
     
     func networkAvailabilityStream() -> AsyncStream<Bool> {
@@ -37,7 +37,7 @@ final class NWNetworkMonitor: NetworkMonitorProtocol {
                 task.cancel()
             }
             
-            self.continuation = continuation
+            continuations.append(continuation)
         }
     }
     

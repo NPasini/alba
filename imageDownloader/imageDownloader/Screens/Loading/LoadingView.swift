@@ -30,12 +30,11 @@ struct LoadingView: View {
 }
 
 #Preview("LoadingView - Available Network") {
-    let networkMonitor = NetworkMonitorMock.available
-    return LoadingView(
+    LoadingView(
         model: LoadingViewModel(
             httpClient: HTTPClientMock(),
-            networkMonitor: networkMonitor,
-            networkPerformer: NetworkOperationPerformer(networkMonitor: networkMonitor),
+            networkMonitor: NetworkMonitorMock.available,
+            networkPerformer: NetworkOperationPerformer(networkMonitor: NetworkMonitorMock.available),
             onDownloadCompleted: { _ in
                 print("Download completed")
             }
@@ -44,12 +43,11 @@ struct LoadingView: View {
 }
 
 #Preview("LoadingView - Not Available Network") {
-    let networkMonitor = NetworkMonitorMock.neverAvailable
-    return LoadingView(
+    LoadingView(
         model: LoadingViewModel(
             httpClient: HTTPClientMock(),
-            networkMonitor: networkMonitor,
-            networkPerformer: NetworkOperationPerformer(networkMonitor: networkMonitor),
+            networkMonitor: NetworkMonitorMock.neverAvailable,
+            networkPerformer: NetworkOperationPerformer(networkMonitor: NetworkMonitorMock.neverAvailable),
             onDownloadCompleted: { _ in
                 print("Download completed")
             }

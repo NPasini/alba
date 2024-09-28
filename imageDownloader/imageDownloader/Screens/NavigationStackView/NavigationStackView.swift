@@ -1,5 +1,5 @@
 //
-//  ScreensStackView.swift
+//  NavigationStackView.swift
 //  imageDownloader
 //
 //  Created by nicolo.pasini on 24/09/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ScreensStackView: View {
+struct NavigationStackView: View {
     private let model: LoadingViewModel
     
     @Bindable private var router: Router
@@ -33,9 +33,9 @@ struct ScreensStackView: View {
     }
 }
 
-private extension ScreensStackView {
+private extension NavigationStackView {
     enum Text {
-        static let loadingScreenTitle = "Loading data"
         static let imageScreenTitle = "Random Pokemon"
+        static let loadingScreenTitle = "Loading data"
     }
 }

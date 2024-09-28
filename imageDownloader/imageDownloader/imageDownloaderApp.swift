@@ -14,7 +14,7 @@ struct imageDownloaderApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ScreensStackView(
+            NavigationStackView(
                 model: LoadingViewModel(
                     httpClient: httpClient, 
                     networkMonitor: NWNetworkMonitor(),

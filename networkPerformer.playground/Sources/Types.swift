@@ -1,6 +1,7 @@
 import Foundation
 
 public typealias AsyncOperation = () async -> OperationResult
+public typealias AsyncIntOperation = (Int) async -> OperationResult
 public typealias OperationResult = Result<OperationType, OperationError>
 
 public enum OperationType {
@@ -11,14 +12,14 @@ public enum OperationError: Error {
     case genericError
 }
 
-public struct AsyncThrowingTask {
-    private let operation: () async throws -> OperationResult
+public struct AsyncTask {
+    private let operation: () async -> OperationResult
     
-    init(operation: @escaping () async throws -> OperationResult) {
+    init(operation: @escaping () async -> OperationResult) {
         self.operation = operation
     }
     
-    func execute() async throws -> OperationResult {
-        try await operation()
+    func execute() async -> OperationResult {
+        await operation()
     }
 }

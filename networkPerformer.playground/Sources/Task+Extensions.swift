@@ -1,9 +1,9 @@
 public extension Task where Success == Never, Failure == Never {
-    static func race(firstCompleted tasks: [AsyncThrowingTask]) async throws -> OperationResult {
-        try await withThrowingTaskGroup(of: OperationResult.self) { group -> OperationResult in
+    static func race<OperationResult>(firstCompleted tasks: [AsyncTask<OperationResult>]) async -> OperationResult {
+        await withTaskGroup(of: OperationResult.self) { group -> OperationResult in
             for task in tasks {
                 group.addTask() {
-                    try await task.execute()
+                    await task.execute()
                 }
             }
             
@@ -11,7 +11,7 @@ public extension Task where Success == Never, Failure == Never {
                 group.cancelAll()
             }
             
-            if let firstToComplete = try await group.next() {
+            if let firstToComplete = await group.next() {
                 return firstToComplete
             } else {
                 fatalError("Expecting at least 1 task")

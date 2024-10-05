@@ -58,15 +58,19 @@ private extension NetworkOperationPerformer {
         }
     }
     
-    func timerTask(withTimeout timeout: TimeInterval) -> AsyncThrowingTask {
-        AsyncThrowingTask {
-            try await Task.sleep(nanoseconds: UInt64(timeout) * 1_000_000_000)
-            return .success(.timeout)
+    func timerTask(withTimeout timeout: TimeInterval) -> AsyncTask {
+        AsyncTask {
+            do {
+                try await Task.sleep(nanoseconds: UInt64(timeout) * 1_000_000_000)
+                return .success(.timeout)
+            } catch {
+                return .failure(.genericError)
+            }
         }
     }
     
-    func monitorForNetworkAvailableTask() -> AsyncThrowingTask {
-        AsyncThrowingTask {
+    func monitorForNetworkAvailableTask() -> AsyncTask {
+        AsyncTask {
             for await availability in self.networkMonitor.networkAvailabilityStream() {
                 if availability { break }
             }
@@ -79,8 +83,8 @@ private extension NetworkOperationPerformer {
         }
     }
     
-    func cancelOperationTask() -> AsyncThrowingTask {
-        AsyncThrowingTask {
+    func cancelOperationTask() -> AsyncTask {
+        AsyncTask {
             for await isCancelled in self.listenForCancelEvent() {
                 if isCancelled { break }
             }

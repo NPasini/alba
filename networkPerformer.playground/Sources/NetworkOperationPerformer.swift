@@ -12,7 +12,6 @@ public final class NetworkOperationPerformer {
     }
     
     private let networkMonitor: NetworkMonitorProtocol
-    private var cancelContinuation: AsyncStream<Bool>.Continuation?
     
     public init(networkMonitor: NetworkMonitorProtocol = NWNetworkMonitor()) {
         self.networkMonitor = networkMonitor
@@ -36,13 +35,6 @@ public final class NetworkOperationPerformer {
         }
         
         return .success(await networkOperation())
-    }
-    
-    /// Cancel the execution of the launched operation.
-    /// - If the operation is waiting network connection to be executed the `NetworkOperationPerformer` will stop monitoring for network availability and the given closure will not be invoked;
-    /// - If the operation has been started it will continue to execute until it completes;
-    public func cancelTask() {
-        cancelContinuation?.yield(true)
     }
 }
 
@@ -82,26 +74,6 @@ extension NetworkOperationPerformer {
             }
             
             return .success(.networkMonitor)
-        }
-    }
-    
-    func cancelOperationTask() -> AsyncTask {
-        AsyncTask {
-            for await isCancelled in self.listenForCancelEvent() {
-                if isCancelled { break }
-            }
-            
-            guard !Task.isCancelled else {
-                return .failure(.genericError)
-            }
-            
-            return .success(.cancellation)
-        }
-    }
-    
-    func listenForCancelEvent() -> AsyncStream<Bool> {
-        AsyncStream { continuation in
-            self.cancelContinuation = continuation
         }
     }
 }

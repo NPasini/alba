@@ -3,6 +3,10 @@ import Foundation
 public final class NetworkOperationPerformer {
     private typealias TaskResult = Result<TaskType, TaskError>
     
+    private enum TaskError: Error {
+        case genericError
+    }
+    
     private enum TaskType {
         case timer, networkMonitor
     }
@@ -26,7 +30,7 @@ public final class NetworkOperationPerformer {
     ///     - `timeout`: The timeout after which stop monitoring for network availability and the closure is not executed.
     ///     - `networkOperation`: The closure to execute.
     /// - Returns: An `OperationResult` which contains `failure` in case the closure is not executed because of the timeout or the closure execution returns an error, `success` in case the closure is executed successfully.
-    public func perform<OperationResult>(withinSeconds timeout: TimeInterval, networkOperation: () async -> OperationResult) async -> Result<OperationResult, TaskError> {
+    public func perform<OperationResult>(withinSeconds timeout: TimeInterval, networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError> {
         guard networkMonitor.isInternetConnectionAvailable() else {
             return await waitNetworkAvailability(withTimeout: timeout, andPerformOperation: networkOperation)
         }
@@ -43,7 +47,7 @@ public final class NetworkOperationPerformer {
 }
 
 extension NetworkOperationPerformer {
-    func waitNetworkAvailability<OperationResult>(withTimeout timeout: TimeInterval, andPerformOperation networkOperation: () async -> OperationResult) async -> Result<OperationResult, TaskError> {
+    func waitNetworkAvailability<OperationResult>(withTimeout timeout: TimeInterval, andPerformOperation networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError> {
         let result = await Task.race(firstCompleted: [
             timerTask(withTimeout: timeout),
             monitorForNetworkAvailableTask()

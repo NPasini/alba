@@ -7,26 +7,18 @@
 
 import Foundation
 
-typealias AsyncOperation = () async -> OperationResult
-typealias OperationResult = Result<OperationType, OperationError>
-
-enum OperationType {
-    case timeout, cancellation, networkMonitor, networkTask, imageDownload(imageData: Data)
-}
-
-enum OperationError: Error {
+enum NetworkOperationError: Error {
     case genericError, networkOperationNotPerformed
 }
 
-struct AsyncThrowingTask {
-    private let operation: () async throws -> OperationResult
+struct AsyncTask<OperationResult> {
+    private let operation: () async -> OperationResult
     
-    init(operation: @escaping () async throws -> OperationResult) {
+    init(operation: @escaping () async -> OperationResult) {
         self.operation = operation
     }
     
-    func execute() async throws -> OperationResult {
-        try await operation()
+    func execute() async -> OperationResult {
+        await operation()
     }
 }
-

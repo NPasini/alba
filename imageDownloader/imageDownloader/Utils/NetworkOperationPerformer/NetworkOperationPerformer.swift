@@ -8,14 +8,21 @@
 import Foundation
 
 protocol NetworkOperationPerformerProtocol {
-    func cancelTask()
-    func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult
+    func perform<OperationResult>(withinSeconds timeout: TimeInterval, networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError>
 }
 
 final class NetworkOperationPerformer: NetworkOperationPerformerProtocol {
-    private var networkOperation: AsyncOperation?
+    private typealias TaskResult = Result<TaskType, TaskError>
+    
+    private enum TaskError: Error {
+        case genericError
+    }
+    
+    private enum TaskType {
+        case timer, networkMonitor
+    }
+    
     private let networkMonitor: NetworkMonitorProtocol
-    private var cancelContinuation: AsyncStream<Bool>.Continuation?
     
     init(networkMonitor: NetworkMonitorProtocol) {
         self.networkMonitor = networkMonitor
@@ -33,52 +40,42 @@ final class NetworkOperationPerformer: NetworkOperationPerformerProtocol {
     ///     - `timeout`: The timeout after which stop monitoring for network availability and the closure is not executed.
     ///     - `networkOperation`: The closure to execute.
     /// - Returns: An `OperationResult` which contains `failure` in case the closure is not executed because of the timeout or the closure execution returns an error, `success` in case the closure is executed successfully.
-    func perform(withinSeconds timeout: TimeInterval, networkOperation: @escaping AsyncOperation) async -> OperationResult {
-        self.networkOperation = networkOperation
-        
+    func perform<OperationResult>(withinSeconds timeout: TimeInterval, networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError> {
         guard networkMonitor.isInternetConnectionAvailable() else {
             return await waitNetworkAvailability(withTimeout: timeout, andPerformOperation: networkOperation)
         }
         
-        return await networkOperation()
-    }
-    
-    /// Cancel the execution of the launched operation.
-    /// - If the operation is waiting network connection to be executed the `NetworkOperationPerformer` will stop monitoring for network availability and the given closure will not be invoked;
-    /// - If the operation has been started it will continue to execute until it completes;
-    func cancelTask() {
-        cancelContinuation?.yield(true)
+        return .success(await networkOperation())
     }
 }
 
-private extension NetworkOperationPerformer {
-    func waitNetworkAvailability(withTimeout timeout: TimeInterval, andPerformOperation networkOperation: @escaping AsyncOperation) async -> OperationResult {
-        do {
-            let result = try await Task.race(firstCompleted: [
-                timerTask(withTimeout: timeout),
-                monitorForNetworkAvailableTask(),
-                cancelOperationTask()
-            ])
-            
-            if case .success(.networkMonitor) = result {
-                return await networkOperation()
-            } else {
-                return .failure(.networkOperationNotPerformed)
+extension NetworkOperationPerformer {
+    func waitNetworkAvailability<OperationResult>(withTimeout timeout: TimeInterval, andPerformOperation networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError> {
+        let result = await Task.race(firstCompleted: [
+            timerTask(withTimeout: timeout),
+            monitorForNetworkAvailableTask()
+        ])
+        
+        if case .success(.networkMonitor) = result {
+            return .success(await networkOperation())
+        } else {
+            return .failure(.networkOperationNotPerformed)
+        }
+    }
+    
+    private func timerTask(withTimeout timeout: TimeInterval) -> AsyncTask<TaskResult> {
+        AsyncTask {
+            do {
+                try await Task.sleep(nanoseconds: UInt64(timeout) * 1_000_000_000)
+                return .success(.timer)
+            } catch {
+                return .failure(.genericError)
             }
-        } catch {
-            return .failure(.genericError)
         }
     }
     
-    func timerTask(withTimeout timeout: TimeInterval) -> AsyncThrowingTask {
-        AsyncThrowingTask {
-            try await Task.sleep(nanoseconds: UInt64(timeout) * 1_000_000_000)
-            return .success(.timeout)
-        }
-    }
-    
-    func monitorForNetworkAvailableTask() -> AsyncThrowingTask {
-        AsyncThrowingTask {
+    private func monitorForNetworkAvailableTask() -> AsyncTask<TaskResult> {
+        AsyncTask {
             for await availability in self.networkMonitor.networkAvailabilityStream() {
                 if availability { break }
             }
@@ -90,25 +87,4 @@ private extension NetworkOperationPerformer {
             return .success(.networkMonitor)
         }
     }
-    
-    func cancelOperationTask() -> AsyncThrowingTask {
-        AsyncThrowingTask {
-            for await isCancelled in self.listenForCancelEvent() {
-                if isCancelled { break }
-            }
-            
-            guard !Task.isCancelled else {
-                return .failure(.genericError)
-            }
-            
-            return .success(.cancellation)
-        }
-    }
-    
-    func listenForCancelEvent() -> AsyncStream<Bool> {
-        AsyncStream { continuation in
-            self.cancelContinuation = continuation
-        }
-    }
 }
-

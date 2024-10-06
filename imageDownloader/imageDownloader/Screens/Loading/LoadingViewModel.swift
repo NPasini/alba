@@ -9,6 +9,16 @@ import SwiftUI
 
 @Observable 
 final class LoadingViewModel {
+    private typealias TaskResult = Result<TaskType, TaskError>
+    
+    private enum TaskError: Error {
+        case genericError, networkOperationNotPerformed
+    }
+    
+    private enum TaskType {
+        case timer, networkMonitor, imageDownload(imageData: Data?)
+    }
+    
     private var isNetworkAvailable: Bool
     private var hasNetworkLabelThresoldTimePassed: Bool = false
     
@@ -36,7 +46,7 @@ final class LoadingViewModel {
     }
     
     func onAppear() async {
-        await withTaskGroup(of: OperationResult.self) { group in
+        await withTaskGroup(of: TaskResult.self) { group in
             group.addTask { await self.monitoringForNetworkAvailability() }
             group.addTask { await self.startNetworkThresholdTimer() }
             group.addTask { await self.fetchImage() }
@@ -56,13 +66,13 @@ private extension LoadingViewModel {
     static let networkLabelTreshold: TimeInterval = 0.5
     static let networkOperationTimeout: TimeInterval = 2
     
-    func startNetworkThresholdTimer() async -> OperationResult {
+    private func startNetworkThresholdTimer() async -> TaskResult {
         try? await Task.sleep(nanoseconds: UInt64(networkAvailableTimeout) * 1_000_000_000)
         hasNetworkLabelThresoldTimePassed = true
-        return .success(.timeout)
+        return .success(.timer)
     }
     
-    func monitoringForNetworkAvailability() async -> OperationResult {
+    private func monitoringForNetworkAvailability() async -> TaskResult {
         for await availability in networkMonitor.networkAvailabilityStream() {
             isNetworkAvailable = availability
         }
@@ -70,21 +80,23 @@ private extension LoadingViewModel {
         return .success(.networkMonitor)
     }
     
-    func fetchImage() async -> OperationResult {
-        return await networkPerformer.perform(withinSeconds: downloadTimeout) { [weak self] in
-            guard let self else { return .failure(.genericError) }
-            
-            do {
-                guard let url = ImageEndpoint.getImage.url() else { return .failure(.genericError) }
-                let downloadedImageData = try await httpClient.getData(from: url)
-                return .success(.imageDownload(imageData: downloadedImageData))
-            } catch {
-                return .failure(.networkOperationNotPerformed)
-            }
+    private func fetchImage() async -> TaskResult {
+        let result = await networkPerformer.perform(withinSeconds: downloadTimeout) { [weak self] () async -> Data? in
+            guard let self,
+                  let url = ImageEndpoint.getImage.url(),
+                  let data = try? await httpClient.getData(from: url) else { return nil }
+            return data
+        }
+        
+        switch result {
+        case let .success(data):
+            return .success(.imageDownload(imageData: data))
+        default:
+            return .failure(.networkOperationNotPerformed)
         }
     }
     
-    func isResultHandled(_ result: OperationResult) -> Bool {
+    private func isResultHandled(_ result: TaskResult) -> Bool {
         if case let .success(.imageDownload(imageData)) = result {
             onDownloadCompleted(imageData)
             return true

@@ -75,7 +75,7 @@ fileprivate struct BoolGenerator: AsyncSequence, AsyncIteratorProtocol {
     mutating func next() async -> Element? {
         try? await Task.sleep(nanoseconds: 500_000_000)
         counter += 1
-        return counter == limit
+        return counter >= limit
     }
 
     func makeAsyncIterator() -> BoolGenerator {

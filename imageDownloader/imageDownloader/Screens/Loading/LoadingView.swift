@@ -35,7 +35,7 @@ struct LoadingView: View {
             httpClient: HTTPClientMock(),
             networkMonitor: NetworkMonitorMock.available,
             networkPerformer: NetworkOperationPerformer(networkMonitor: NetworkMonitorMock.available),
-            onDownloadCompleted: { _ in
+            onLoadingCompleted: { _ in
                 print("Download completed")
             }
         )
@@ -48,7 +48,7 @@ struct LoadingView: View {
             httpClient: HTTPClientMock(),
             networkMonitor: NetworkMonitorMock.neverAvailable,
             networkPerformer: NetworkOperationPerformer(networkMonitor: NetworkMonitorMock.neverAvailable),
-            onDownloadCompleted: { _ in
+            onLoadingCompleted: { _ in
                 print("Download completed")
             }
         )

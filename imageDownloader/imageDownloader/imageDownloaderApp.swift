@@ -19,7 +19,7 @@ struct imageDownloaderApp: App {
                     httpClient: httpClient, 
                     networkMonitor: NWNetworkMonitor(),
                     networkPerformer: NetworkOperationPerformer(networkMonitor: NWNetworkMonitor()),
-                    onDownloadCompleted: { data in
+                    onLoadingCompleted: { data in
                         router.navigate(to: .imageScreen(imageData: data))
                     }
                 ),

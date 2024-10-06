@@ -24,7 +24,7 @@ final class LoadingViewModel {
     
     private let downloadTimeout: TimeInterval
     private let httpClient: HTTPClientProtocol
-    private let onDownloadCompleted: (Data?) -> Void
+    private let onLoadingCompleted: (Data?) -> Void
     private let networkAvailableTimeout: TimeInterval
     private let networkMonitor: NetworkMonitorProtocol
     private let networkPerformer: NetworkOperationPerformerProtocol
@@ -35,12 +35,12 @@ final class LoadingViewModel {
     
     let notAvailableNetworkText = "Network not available 😢"
     
-    init(httpClient: HTTPClientProtocol, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformerProtocol, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout, onDownloadCompleted: @escaping (Data?) -> Void) {
+    init(httpClient: HTTPClientProtocol, networkMonitor: NetworkMonitorProtocol, networkPerformer: NetworkOperationPerformerProtocol, networkAvailableTimeout: TimeInterval = networkLabelTreshold, downloadTimeout: TimeInterval = networkOperationTimeout, onLoadingCompleted: @escaping (Data?) -> Void) {
         self.httpClient = httpClient
         self.networkMonitor = networkMonitor
         self.downloadTimeout = downloadTimeout
         self.networkPerformer = networkPerformer
-        self.onDownloadCompleted = onDownloadCompleted
+        self.onLoadingCompleted = onLoadingCompleted
         self.networkAvailableTimeout = networkAvailableTimeout
         isNetworkAvailable = networkMonitor.isInternetConnectionAvailable()
     }
@@ -98,10 +98,10 @@ private extension LoadingViewModel {
     
     private func isResultHandled(_ result: TaskResult) -> Bool {
         if case let .success(.imageDownload(imageData)) = result {
-            onDownloadCompleted(imageData)
+            onLoadingCompleted(imageData)
             return true
         } else if case .failure(.networkOperationNotPerformed) = result {
-            onDownloadCompleted(nil)
+            onLoadingCompleted(nil)
             return true
         }
 

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NetworkOperationPerformerProtocol {
-    func perform<OperationResult>(withinSeconds timeout: TimeInterval, networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError>
+    func perform<OperationResult>(task: Int, withinSeconds timeout: TimeInterval, networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError>
 }
 
 final class NetworkOperationPerformer: NetworkOperationPerformerProtocol {
@@ -40,7 +40,8 @@ final class NetworkOperationPerformer: NetworkOperationPerformerProtocol {
     ///     - `timeout`: The timeout after which stop monitoring for network availability and the closure is not executed.
     ///     - `networkOperation`: The closure to execute.
     /// - Returns: An `OperationResult` which contains `failure` in case the closure is not executed because of the timeout or the closure execution returns an error, `success` in case the closure is executed successfully.
-    func perform<OperationResult>(withinSeconds timeout: TimeInterval, networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError> {
+    func perform<OperationResult>(task: Int, withinSeconds timeout: TimeInterval, networkOperation: () async -> OperationResult) async -> Result<OperationResult, NetworkOperationError> {
+        print("Test - start network operation check \(task)")
         guard networkMonitor.isInternetConnectionAvailable() else {
             return await waitNetworkAvailability(withTimeout: timeout, andPerformOperation: networkOperation)
         }

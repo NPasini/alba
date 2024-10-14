@@ -29,6 +29,9 @@ final class NWNetworkMonitor: NetworkMonitorProtocol {
         AsyncStream<Bool> { continuation in
             let task = Task {
                 for await path in monitor {
+                    if path.status == .satisfied {
+                        print("Test - network available")
+                    }
                     continuation.yield(path.status == .satisfied)
                 }
             }

@@ -19,6 +19,7 @@ final class LoadingViewModel {
         case timer, networkMonitor, imageDownload(imageData: Data?)
     }
     
+    private var counter = Counter()
     private var isNetworkAvailable: Bool
     private var hasNetworkLabelThresoldTimePassed: Bool = false
     
@@ -47,24 +48,35 @@ final class LoadingViewModel {
     
     func onAppear() async {
         await withTaskGroup(of: TaskResult.self) { group in
-            group.addTask { await self.monitoringForNetworkAvailability() }
-            group.addTask { await self.startNetworkThresholdTimer() }
+//            group.addTask { await self.monitoringForNetworkAvailability() }
+//            group.addTask { await self.startNetworkThresholdTimer() }
             group.addTask { await self.fetchImage() }
+            group.addTask { await self.fetchImage() }
+            group.addTask {
+                try! await Task.sleep(nanoseconds: 2_000_000_000)
+                return await self.fetchImage()
+            }
+            
+            var results = [TaskResult]()
+                for await result in group {
+                    results.append(result)
+                }
+            print(results)
             
             defer {
                 group.cancelAll()
             }
             
-            while let taskResult = await group.next() {
-                if isResultHandled(taskResult) { return }
-            }
+//            while let taskResult = await group.next() {
+//                if isResultHandled(taskResult) { return }
+//            }
         }
     }
 }
 
 private extension LoadingViewModel {
     static let networkLabelTreshold: TimeInterval = 0.5
-    static let networkOperationTimeout: TimeInterval = 2
+    static let networkOperationTimeout: TimeInterval = 5
     
     private func startNetworkThresholdTimer() async -> TaskResult {
         try? await Task.sleep(nanoseconds: UInt64(networkAvailableTimeout) * 1_000_000_000)
@@ -81,10 +93,15 @@ private extension LoadingViewModel {
     }
     
     private func fetchImage() async -> TaskResult {
-        let result = await networkPerformer.perform(withinSeconds: downloadTimeout) { [weak self] () async -> Data? in
+        let value = await counter.value
+        await counter.increaseValue()
+        let result = await networkPerformer.perform(task: value, withinSeconds: downloadTimeout) { [weak self] () async -> Data? in
+            print("Test - execute operation \(value)")
             guard let self,
                   let url = ImageEndpoint.getImage.url(),
-                  let data = try? await httpClient.getData(from: url) else { return nil }
+                  let data = try? await httpClient.getData(from: url) else {
+                return nil
+            }
             return data
         }
         
@@ -106,5 +123,13 @@ private extension LoadingViewModel {
         }
 
         return false
+    }
+}
+
+fileprivate actor Counter {
+    var value: Int = 0
+    
+    func increaseValue() {
+        value += 1
     }
 }
